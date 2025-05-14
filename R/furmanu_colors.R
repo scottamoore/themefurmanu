@@ -80,10 +80,14 @@ scale_color_furmanu <- function(palette = "main", discrete = TRUE, reverse = FAL
   } else {
     colors <- pal(256)
 
+    args <- list(...)
+
     if (!is.null(midpoint) && length(furmanu_palettes[[palette]]) == 3) {
+      lims <- if ("limits" %in% names(args)) args$limits else range(c(0, midpoint))
+
       ggplot2::scale_color_gradientn(
         colours = colors,
-        values = scales::rescale(c(0, midpoint, 1), from = range(...$limits, na.rm = TRUE)),
+        values = scales::rescale(c(0, midpoint, 1), from = lims),
         ...
       )
     } else {
@@ -107,10 +111,14 @@ scale_fill_furmanu <- function(palette = "main",
   } else {
     colors <- pal(256)
 
+    args <- list(...)
+
     if (!is.null(midpoint) && length(furmanu_palettes[[palette]]) == 3) {
+      lims <- if ("limits" %in% names(args)) args$limits else range(c(0, midpoint))
+
       ggplot2::scale_fill_gradientn(
         colours = colors,
-        values = scales::rescale(c(0, midpoint, 1), from = range(...$limits, na.rm = TRUE)),
+        values = scales::rescale(c(0, midpoint, 1), from = lims),
         ...
       )
     } else {

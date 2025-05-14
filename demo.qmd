@@ -53,10 +53,10 @@ In the following, we demonstrate the use of the color palettes in a variety of g
 
 The benefits of the `scale_*_furmanu()` functions are that they
 
-1. Automatically apply the correct color palette based on the type of data (discrete or continuous) and the type of graph (point, line, etc.),
-2. Allow you to specify the palette name (e.g., `main`, `divergent1`, etc.) and whether the palette should be discrete or continuous, 
-2. Help you to apply the right kind of palette (sequential, divergent, or categorical) based on the type of data you are working with, without having to go through the sometimes challenging process of defining one yourself, and
-2. Help you use pre-defined palettes that are consistent with the university's branding guidelines.
+1.  Automatically apply the correct color palette based on the type of data (discrete or continuous) and the type of graph (point, line, etc.),
+2.  Allow you to specify the palette name (e.g., `main`, `divergent1`, etc.) and whether the palette should be discrete or continuous,
+3.  Help you to apply the right kind of palette (sequential, divergent, or categorical) based on the type of data you are working with, without having to go through the sometimes challenging process of defining one yourself, and
+4.  Help you use pre-defined palettes that are consistent with the university's branding guidelines.
 
 This makes it easy to create consistent and visually appealing graphs without having to manually specify the colors each time.
 
@@ -256,5 +256,3 @@ iris |>
          color = "Species",
          caption = "Made for rforir")
 ```
-
-

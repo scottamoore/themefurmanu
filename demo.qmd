@@ -1,0 +1,41 @@
+---
+title: "Furman ggplot2 Theme Demo"
+format: html
+editor: visual
+---
+
+```{r setup}
+library(ggplot2)
+library(themefurmanu)
+# Font registration is automatic, but you can also do it explicitly:
+# register_furmanu_fonts()
+```
+
+## Default Scatter Plot
+
+```{r}
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point(color = "#582c83", size = 3) +
+  labs(
+    title = "Fuel Efficiency by Car Weight",
+    subtitle = "Using `theme_furmanu()` from the themefurmanu package",
+    x = "Weight (1000 lbs)",
+    y = "Miles per Gallon",
+    caption = "Source: mtcars dataset"
+  ) +
+  theme_furmanu()
+```
+
+## Faceted Histogram Example
+
+```{r}
+ggplot(mpg, aes(displ)) +
+  geom_histogram(fill = "#201547", color = "white") +
+  facet_wrap(~class) +
+  labs(
+    title = "Distribution of Engine Displacement",
+    subtitle = "Faceted by Vehicle Class",
+    caption = "Source: ggplot2 mpg dataset"
+  ) +
+  theme_furmanu()
+```

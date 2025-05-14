@@ -1,0 +1,17 @@
+Package: themefurmanu
+Type: Package
+Title: Custom Furman ggplot Theme with Robust Font Support
+Version: 0.1.0
+Authors@R: 
+  person("Scott", "Moore", email = "smoore9@furman.edu", role = c("aut", "cre"))
+Description: Provides a reusable ggplot2 theme for Furman-branded data visualizations using IBM Plex fonts with system fallbacks.
+Depends: R (>= 4.2.0)
+Imports:
+  ggplot2,
+  systemfonts,
+  grid
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2

@@ -1,0 +1,41 @@
+---
+output: github_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(themefurmanu)
+register_furmanu_fonts()
+```
+
+# themefurmanu
+
+The `themefurmanu` package provides a custom `ggplot2` theme and font registration functions using Furman University’s visual identity.
+
+Note that this is not an official package from Furman University. It is a personal project to help with visual consistency in data visualizations across teams at Furman that use `R`.
+
+## Installation
+
+```r
+# From GitHub
+devtools::install_github("scottamoore/themefurmanu")
+```
+
+## Usage
+
+```r
+library(themefurmanu)
+
+# Font registration is automatic, but you can also do it explicitly:
+# register_furmanu_fonts()
+
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  labs(
+    title = "Fuel Efficiency by Car Weight",
+    subtitle = "Using Furman theme and fonts",
+    caption = "Source: mtcars dataset"
+  ) +
+  theme_furmanu()
+```

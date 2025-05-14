@@ -118,3 +118,34 @@ scale_fill_furmanu <- function(palette = "main",
     }
   }
 }
+
+#' Display all Furman palettes visually
+#'
+#' Shows all named Furman palettes as horizontal bars.
+#'
+#' @export
+show_furmanu_palettes <- function() {
+  n <- length(furmanu_palettes)
+  max_cols <- max(sapply(furmanu_palettes, length))
+  palette_names <- names(furmanu_palettes)
+
+  # Set larger left margin (bottom, left, top, right)
+  old_par <- graphics::par(mar = c(1, 6, 3, 1))
+
+  graphics::plot(
+    NULL, xlim = c(0, max_cols), ylim = c(0, n),
+    type = "n", axes = FALSE, xlab = "", ylab = "",
+    main = "Furman Color Palettes"
+  )
+
+  for (i in seq_along(furmanu_palettes)) {
+    pal <- furmanu_palettes[[i]]
+    for (j in seq_along(pal)) {
+      graphics::rect(j - 1, n - i, j, n - i + 0.8, col = pal[j], border = NA)
+    }
+    graphics::text(-0.2, n - i + 0.4, labels = palette_names[i], adj = 1, xpd = TRUE)
+  }
+
+  # Reset margin settings
+  graphics::par(old_par)
+}

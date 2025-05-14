@@ -49,8 +49,9 @@ register_furmanu_fonts <- function() {
 #'
 #' @import ggplot2
 #' @examples
+#' library(ggplot2)
 #' register_furmanu_fonts()
-#' ggplot(mtcars, aes(wt, mpg)) + geom_point() + theme_furmanu()
+#' ggplot(mtcars, aes(wt, mpg)) + geom_point() + labs(title="Test title", caption="A demo caption") + theme_furmanu()
 theme_furmanu <- function(base_size = 12, base_family = NULL) {
   sf <- systemfonts::system_fonts()
   has_ibm_plex <- "IBM Plex Sans" %in% sf$family

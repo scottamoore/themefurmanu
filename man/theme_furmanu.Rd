@@ -4,15 +4,12 @@
 \alias{theme_furmanu}
 \title{Custom Furman ggplot2 Theme}
 \usage{
-theme_furmanu(
-  base_size = 12,
-  base_family = "IBM Plex Sans, Helvetica, Arial, sans-serif"
-)
+theme_furmanu(base_size = 12, base_family = NULL)
 }
 \arguments{
 \item{base_size}{Base font size.}
 
-\item{base_family}{Base font family.}
+\item{base_family}{Optional override for base font family.}
 }
 \value{
 A ggplot2 theme object.

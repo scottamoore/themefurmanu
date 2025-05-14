@@ -157,3 +157,19 @@ show_furmanu_palettes <- function() {
   # Reset margin settings
   graphics::par(old_par)
 }
+
+#' Open the Furman ggplot2 theme demo Quarto file
+#'
+#' This function opens the demo Quarto (.qmd) file included in the themefurmanu package.
+#' It demonstrates various uses of `theme_furmanu()` and the `scale_*_furmanu()` functions.
+#'
+#' The demo file is located in the installed package directory under inst/demo/demo.qmd.
+#'
+#' @export
+open_furmanu_demo <- function() {
+  demo_path <- system.file("demo", "demo.qmd", package = "themefurmanu")
+  if (demo_path == "") {
+    stop("Could not find demo.qmd inside the installed themefurmanu package.")
+  }
+  file.edit(demo_path)
+}

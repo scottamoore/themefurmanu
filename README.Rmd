@@ -39,3 +39,5 @@ ggplot(mtcars, aes(x = wt, y = mpg)) +
   ) +
   theme_furmanu()
 ```
+
+#' See also \code{\link{open_furmanu_demo}} to view the full example Quarto file.

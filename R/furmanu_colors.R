@@ -85,9 +85,13 @@ scale_color_furmanu <- function(palette = "main", discrete = TRUE, reverse = FAL
     if (!is.null(midpoint) && length(furmanu_palettes[[palette]]) == 3) {
       lims <- if ("limits" %in% names(args)) args$limits else range(c(0, midpoint))
 
+      vals <- c(lims[1], midpoint, lims[2])
+      if (length(unique(vals)) < 3) {
+        warning("Color scale values are not unique. Consider adjusting limits or midpoint.")
+      }
       ggplot2::scale_color_gradientn(
         colours = colors,
-        values = scales::rescale(c(0, midpoint, 1), from = lims),
+        values = scales::rescale(vals, from = range(vals)),
         ...
       )
     } else {
@@ -116,9 +120,13 @@ scale_fill_furmanu <- function(palette = "main",
     if (!is.null(midpoint) && length(furmanu_palettes[[palette]]) == 3) {
       lims <- if ("limits" %in% names(args)) args$limits else range(c(0, midpoint))
 
-      ggplot2::scale_fill_gradientn(
+      vals <- c(lims[1], midpoint, lims[2])
+      if (length(unique(vals)) < 3) {
+        warning("Color scale values are not unique. Consider adjusting limits or midpoint.")
+      }
+      ggplot2::scale_color_gradientn(
         colours = colors,
-        values = scales::rescale(c(0, midpoint, 1), from = lims),
+        values = scales::rescale(vals, from = range(vals)),
         ...
       )
     } else {

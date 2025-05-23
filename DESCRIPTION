@@ -9,8 +9,9 @@ Depends: R (>= 4.2.0)
 Imports:
   ggplot2,
   systemfonts,
-  grid
-License: MIT
+  grid,
+  scales
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

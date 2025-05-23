@@ -20,5 +20,8 @@ Applies IBM Plex fonts and Furman styling.
 \examples{
 library(ggplot2)
 register_furmanu_fonts()
-ggplot(mtcars, aes(wt, mpg)) + geom_point() + labs(title="Test title", caption="A demo caption") + theme_furmanu()
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() +
+  labs(title = "Test title", caption = "A demo caption") +
+  theme_furmanu()
 }

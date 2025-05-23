@@ -55,6 +55,7 @@ furmanu_palettes <- list(
 #' @param reverse Logical. Should the palette be reversed?
 #' @param ... Additional arguments passed to colorRampPalette()
 #' @return A function to generate interpolated colors
+#' @importFrom grDevices colorRampPalette
 #' @export
 furmanu_pal <- function(palette = "main", reverse = FALSE, ...) {
   pal <- furmanu_palettes[[palette]]
@@ -71,6 +72,7 @@ furmanu_pal <- function(palette = "main", reverse = FALSE, ...) {
 #' @param reverse Reverse the palette?
 #' @param midpoint Optional midpoint value for diverging scales
 #' @param ... Other arguments to scale functions
+#' @importFrom scales rescale
 #' @export
 scale_color_furmanu <- function(palette = "main", discrete = TRUE, reverse = FALSE, midpoint = NULL, ...) {
   pal <- furmanu_pal(palette = palette, reverse = reverse)
@@ -103,6 +105,7 @@ scale_color_furmanu <- function(palette = "main", discrete = TRUE, reverse = FAL
 #' Fill scale using Furman color palettes
 #'
 #' @inheritParams scale_color_furmanu
+#' @importFrom scales rescale
 #' @export
 scale_fill_furmanu <- function(palette = "main",
                                discrete = TRUE,
@@ -173,9 +176,10 @@ show_furmanu_palettes <- function() {
 #'
 #' The demo file is located in the installed package directory under inst/demo/demo.qmd.
 #'
+#' @importFrom utils file.edit
 #' @export
 open_furmanu_demo <- function() {
-  demo_path <- system.file("demo", "demo.qmd", package = "themefurmanu")
+  demo_path <- system.file("furmanu_demo", "demo.qmd", package = "themefurmanu")
   if (demo_path == "") {
     stop("Could not find demo.qmd inside the installed themefurmanu package.")
   }

@@ -14,22 +14,28 @@ register_furmanu_fonts <- function() {
     return(invisible(NULL))
   }
 
+  # Skip font registration in non-interactive or R CMD check environments
+  if (!interactive() || isTRUE(as.logical(Sys.getenv("_R_CHECK_PACKAGE_NAME_")))) {
+    packageStartupMessage("Skipping font registration (non-interactive or R CMD check)")
+    return(invisible(NULL))
+  }
+
   try({
     sf <- systemfonts::system_fonts()
 
     if (!"IBM Plex Sans" %in% sf$family) {
       systemfonts::register_font(
         name = "IBM Plex Sans",
-        plain = systemfonts::font_file_google("IBM Plex Sans", "regular"),
-        bold = systemfonts::font_file_google("IBM Plex Sans", "bold")
+        plain = systemfonts::match_font("sans")$path,
+        bold = systemfonts::match_font("sans", weight = 700)$path
       )
     }
 
     if (!"IBM Plex Sans Condensed" %in% sf$family) {
       systemfonts::register_font(
         name = "IBM Plex Sans Condensed",
-        plain = systemfonts::font_file_google("IBM Plex Sans Condensed", "regular"),
-        bold = systemfonts::font_file_google("IBM Plex Sans Condensed", "bold")
+        plain = systemfonts::match_font("sans")$path,
+        bold = systemfonts::match_font("sans", weight = 700)$path
       )
     }
   }, silent = TRUE)
@@ -43,22 +49,34 @@ register_furmanu_fonts <- function() {
 #'
 #' @param base_size Base font size.
 #' @param base_family Optional override for base font family.
-#'
 #' @return A ggplot2 theme object.
-#' @export
+#'
 #'
 #' @import ggplot2
 #' @examples
 #' library(ggplot2)
 #' register_furmanu_fonts()
-#' ggplot(mtcars, aes(wt, mpg)) + geom_point() + labs(title="Test title", caption="A demo caption") + theme_furmanu()
+#' ggplot(mtcars, aes(wt, mpg)) +
+#'   geom_point() +
+#'   labs(title = "Test title", caption = "A demo caption") +
+#'   theme_furmanu()
+#' @export
 theme_furmanu <- function(base_size = 12, base_family = NULL) {
-  sf <- systemfonts::system_fonts()
-  has_ibm_plex <- "IBM Plex Sans" %in% sf$family
-  has_ibm_cond <- "IBM Plex Sans Condensed" %in% sf$family
+  # Default fallback
+  fu_font <- "sans"
+  fu_graph_font <- "sans"
 
-  fu_font <- if (!is.null(base_family)) base_family else if (has_ibm_plex) "IBM Plex Sans" else "sans"
-  fu_graph_font <- if (has_ibm_cond) "IBM Plex Sans Condensed" else "sans"
+  # Only check fonts if interactive or explicitly not running under R CMD check
+  if (interactive() && requireNamespace("systemfonts", quietly = TRUE)) {
+    sf <- try(systemfonts::system_fonts(), silent = TRUE)
+    if (inherits(sf, "data.frame")) {
+      has_ibm_plex <- "IBM Plex Sans" %in% sf$family
+      has_ibm_cond <- "IBM Plex Sans Condensed" %in% sf$family
+
+      fu_font <- if (!is.null(base_family)) base_family else if (has_ibm_plex) "IBM Plex Sans" else "sans"
+      fu_graph_font <- if (has_ibm_cond) "IBM Plex Sans Condensed" else fu_font
+    }
+  }
 
   dark_color <- "#201547"
   medium_color <- "#582c83"

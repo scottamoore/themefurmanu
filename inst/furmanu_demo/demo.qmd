@@ -29,8 +29,13 @@ You control the behavior through **arguments** rather than function names. This 
 library(dplyr)
 library(ggplot2)
 library(themefurmanu)
-# Font registration is automatic, but you can also do it explicitly:
-# register_furmanu_fonts()
+
+# Font checking is automatic when the package loads
+# The themes work perfectly with system fonts if IBM Plex isn't installed
+# To install IBM Plex fonts for the full Furman branding experience:
+# 1. Download from https://fonts.google.com/specimen/IBM+Plex+Sans
+# 2. Install on your system and restart R
+register_furmanu_fonts()  # Check font availability
 ```
 
 ## Understanding the Palette System

@@ -3,8 +3,7 @@
 # This file defines behavior when the package is loaded or attached.
 
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("Registering Furman fonts...")
-  try(register_furmanu_fonts(), silent = TRUE)
+  try(register_furmanu_fonts(), silent = FALSE)
 }
 
 .onLoad <- function(libname, pkgname) {

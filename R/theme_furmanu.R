@@ -1,34 +1,36 @@
 # FILE: R/themefurmanu.R
 
-#' Register IBM Plex Fonts (with Fallbacks)
+#' Register IBM Plex Fonts (if available)
 #'
-#' Registers IBM Plex Sans and IBM Plex Sans Condensed fonts for use with
-#' the Furman theme. The function handles missing fonts gracefully by falling
-#' back to system fonts, and skips registration in non-interactive environments
-#' or during R CMD check to avoid issues.
+#' Checks for IBM Plex Sans and IBM Plex Sans Condensed fonts on the system.
+#' The function provides feedback about font availability but does not attempt
+#' to create fake font registrations that could cause graphics engine warnings.
 #'
 #' @return Invisibly returns NULL. Function is called for its side effect
-#'   of registering fonts with the systemfonts package.
+#'   of checking font availability and providing user feedback.
 #'
 #' @details
 #' This function:
 #' \itemize{
 #'   \item Checks if systemfonts package is available
-#'   \item Skips registration in non-interactive sessions or R CMD check
-#'   \item Registers IBM Plex Sans and IBM Plex Sans Condensed if not already registered
-#'   \item Falls back to system sans-serif fonts if IBM Plex fonts are unavailable
-#'   \item Handles errors silently to prevent package loading issues
+#'   \item Skips in non-interactive sessions or R CMD check
+#'   \item Reports whether IBM Plex fonts are actually installed
+#'   \item Does NOT create fake font registrations that map to system fonts
+#'   \item Falls back gracefully to system sans-serif fonts in themes
 #' }
 #'
-#' Font registration is automatically attempted when the package loads via
+#' To use IBM Plex fonts, install them from:
+#' \url{https://fonts.google.com/specimen/IBM+Plex+Sans}
+#'
+#' Font checking is automatically performed when the package loads via
 #' \code{.onAttach}, but this function can be called manually if needed.
 #'
 #' @examples
 #' \dontrun{
-#' # Manual font registration
+#' # Check font availability
 #' register_furmanu_fonts()
 #'
-#' # Check if fonts are available
+#' # Check what fonts are actually available
 #' if (requireNamespace("systemfonts", quietly = TRUE)) {
 #'   fonts <- systemfonts::system_fonts()
 #'   "IBM Plex Sans" %in% fonts$family
@@ -40,7 +42,7 @@
 #' @export
 register_furmanu_fonts <- function() {
   if (!requireNamespace("systemfonts", quietly = TRUE)) {
-    warning("systemfonts package not available. Using system font fallbacks only.")
+    packageStartupMessage("systemfonts package not available. Using system font fallbacks.")
     return(invisible(NULL))
   }
 
@@ -52,23 +54,24 @@ register_furmanu_fonts <- function() {
 
   try({
     sf <- systemfonts::system_fonts()
-
-    if (!"IBM Plex Sans" %in% sf$family) {
-      systemfonts::register_font(
-        name = "IBM Plex Sans",
-        plain = systemfonts::match_font("sans")$path,
-        bold = systemfonts::match_font("sans", weight = 700)$path
-      )
+    installed_families <- unique(sf$family)
+    
+    # Only register if IBM Plex fonts are actually installed
+    # Don't create fake registrations that map to system fonts
+    if ("IBM Plex Sans" %in% installed_families) {
+      packageStartupMessage("IBM Plex Sans found and registered for use.")
+      # The font is already available, no need to register
+    } else {
+      packageStartupMessage("IBM Plex Sans not found. Using system sans-serif font.")
     }
-
-    if (!"IBM Plex Sans Condensed" %in% sf$family) {
-      systemfonts::register_font(
-        name = "IBM Plex Sans Condensed",
-        plain = systemfonts::match_font("sans")$path,
-        bold = systemfonts::match_font("sans", weight = 700)$path
-      )
+    
+    if ("IBM Plex Sans Condensed" %in% installed_families) {
+      packageStartupMessage("IBM Plex Sans Condensed found and registered for use.")
+      # The font is already available, no need to register
+    } else {
+      packageStartupMessage("IBM Plex Sans Condensed not found. Using fallback font.")
     }
-  }, silent = TRUE)
+  }, silent = FALSE)  # Show any actual errors
 
   invisible(NULL)
 }
@@ -142,15 +145,26 @@ theme_furmanu <- function(base_size = 12, base_family = NULL) {
   fu_font <- "sans"
   fu_graph_font <- "sans"
 
-  # Only check fonts if interactive or explicitly not running under R CMD check
-  if (interactive() && requireNamespace("systemfonts", quietly = TRUE)) {
+  # Only use IBM Plex fonts if they are actually installed on the system
+  if (!is.null(base_family)) {
+    fu_font <- base_family
+    fu_graph_font <- base_family
+  } else if (interactive() && requireNamespace("systemfonts", quietly = TRUE)) {
     sf <- try(systemfonts::system_fonts(), silent = TRUE)
     if (inherits(sf, "data.frame")) {
-      has_ibm_plex <- "IBM Plex Sans" %in% sf$family
-      has_ibm_cond <- "IBM Plex Sans Condensed" %in% sf$family
-
-      fu_font <- if (!is.null(base_family)) base_family else if (has_ibm_plex) "IBM Plex Sans" else "sans"
-      fu_graph_font <- if (has_ibm_cond) "IBM Plex Sans Condensed" else fu_font
+      # Check for actual IBM Plex installation (not our fallback registration)
+      installed_families <- unique(sf$family)
+      
+      # Only use IBM Plex if it's actually installed
+      if ("IBM Plex Sans" %in% installed_families) {
+        fu_font <- "IBM Plex Sans"
+      }
+      
+      if ("IBM Plex Sans Condensed" %in% installed_families) {
+        fu_graph_font <- "IBM Plex Sans Condensed"
+      } else if ("IBM Plex Sans" %in% installed_families) {
+        fu_graph_font <- "IBM Plex Sans"
+      }
     }
   }
 

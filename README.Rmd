@@ -35,6 +35,21 @@ Note that this is not an official package from Furman University. It is a person
 devtools::install_github("scottamoore/themefurmanu")
 ```
 
+### Optional: IBM Plex Fonts
+
+For the best visual experience, install IBM Plex fonts:
+
+1. Download IBM Plex Sans and IBM Plex Sans Condensed from [Google Fonts](https://fonts.google.com/specimen/IBM+Plex+Sans)
+2. Install the fonts on your system
+3. Restart R/RStudio
+
+The package works perfectly without these fonts (using system fonts as fallbacks), but IBM Plex fonts provide the intended Furman University branding experience.
+
+```r
+# Check font availability after installation
+register_furmanu_fonts()
+```
+
 ## The themefurmanu Approach: One Function, Many Possibilities
 
 Instead of learning multiple function names like `scale_color_viridis_d()`, `scale_color_brewer()`, etc., themefurmanu uses **two main functions** with parameters:

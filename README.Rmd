@@ -19,7 +19,7 @@ The `themefurmanu` package provides a comprehensive ggplot2 theme and color pale
 knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(themefurmanu)
-register_furmanu_fonts()
+# Note: Font checking happens automatically when package loads
 ```
 
 # themefurmanu
@@ -37,17 +37,23 @@ devtools::install_github("scottamoore/themefurmanu")
 
 ### Optional: IBM Plex Fonts
 
-For the best visual experience, install IBM Plex fonts:
+For the authentic Furman University branding experience, install IBM Plex fonts:
 
 1. Download IBM Plex Sans and IBM Plex Sans Condensed from [Google Fonts](https://fonts.google.com/specimen/IBM+Plex+Sans)
 2. Install the fonts on your system
 3. Restart R/RStudio
+4. Use `theme_furmanu(base_family = "IBM Plex Sans")` in your plots
 
-The package works perfectly without these fonts (using system fonts as fallbacks), but IBM Plex fonts provide the intended Furman University branding experience.
+The package works perfectly with system fonts (the default), but IBM Plex fonts provide the complete visual identity.
 
 ```r
-# Check font availability after installation
+# Check what fonts are available (optional)
 register_furmanu_fonts()
+
+# Use IBM Plex fonts if installed
+ggplot(data, aes(x, y)) + 
+  geom_point() + 
+  theme_furmanu(base_family = "IBM Plex Sans")
 ```
 
 ## The themefurmanu Approach: One Function, Many Possibilities

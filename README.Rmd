@@ -221,16 +221,28 @@ export_palette("divergent1", format = "json")
 ## Getting Help
 
 ```r
-# View comprehensive examples
+# Complete function reference and examples
+?themefurmanu_help
+
+# Package overview with all functions
+?themefurmanu-overview
+
+# Visual palette overview
+show_furmanu_palettes()
+
+# Complete tutorial
 open_furmanu_demo()
 
-# Get help on any function
+# Quick reference guide
+open_furmanu_reference()
+
+# Help for specific functions
 ?scale_color_furmanu
 ?theme_furmanu
 ?show_furmanu_palettes
 
-# List all available palettes
-list_palettes()
+# List all package functions
+help(package = "themefurmanu")
 
 # Get detailed palette information
 palette_info("main")

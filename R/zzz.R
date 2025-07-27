@@ -3,6 +3,7 @@
 # This file defines behavior when the package is loaded or attached.
 
 .onAttach <- function(libname, pkgname) {
+  packageStartupMessage("themefurmanu loaded. For help: ?themefurmanu_help or open_furmanu_demo()")
   try(register_furmanu_fonts(), silent = FALSE)
 }
 

@@ -1,5 +1,18 @@
 ---
-output: github_document
+output# themefurmanu
+
+The `themefurmanu` package provides a comprehensive ggplot2 theme and color palette system designed for Furman University's visual identity. Unlike traditional color palette packages that require you to remember different function names, **themefurmanu uses a unified approach** where you specify the palette type and behavior through arguments to a single set of functions.
+
+> **Note**: This is not an official package from Furman University. It is a personal project to help with visual consistency in data visualizations across teams at Furman that use R.
+
+## Key Features
+
+- **Unified color scale functions**: Use `scale_color_furmanu()` and `scale_fill_furmanu()` for all color needs
+- **Intelligent palette system**: Specify discrete vs. continuous, palette type, and special options through arguments
+- **Multiple theme variants**: Standard, presentation, and minimal themes
+- **Accessibility tools**: Built-in contrast checking and accessible color combinations
+- **Export capabilities**: Export palettes to CSS, JSON, RGB, and other formats
+- **Automatic font handling**: IBM Plex fonts with graceful fallbackshub_document
 ---
 
 ```{r setup, include = FALSE}
@@ -22,22 +35,184 @@ Note that this is not an official package from Furman University. It is a person
 devtools::install_github("scottamoore/themefurmanu")
 ```
 
-## Usage
+## The themefurmanu Approach: One Function, Many Possibilities
 
-```r
+Instead of learning multiple function names like `scale_color_viridis_d()`, `scale_color_brewer()`, etc., themefurmanu uses **two main functions** with parameters:
+
+- `scale_color_furmanu(palette = "name", discrete = TRUE/FALSE, ...)`
+- `scale_fill_furmanu(palette = "name", discrete = TRUE/FALSE, ...)`
+
+This approach is more intuitive and consistent across all use cases.
+
+## Quick Start
+
+```{r basic-example, fig.width=8, fig.height=5}
+library(ggplot2)
 library(themefurmanu)
 
-# Font registration is automatic, but you can also do it explicitly:
-# register_furmanu_fonts()
-
-ggplot(mtcars, aes(x = wt, y = mpg)) +
-  geom_point() +
+# Basic scatter plot with categorical colors
+ggplot(mtcars, aes(x = wt, y = mpg, color = factor(cyl))) +
+  geom_point(size = 3) +
+  scale_color_furmanu(palette = "main", discrete = TRUE) +
+  theme_furmanu() +
   labs(
     title = "Fuel Efficiency by Car Weight",
-    subtitle = "Using Furman theme and fonts",
+    subtitle = "Colored by number of cylinders",
+    x = "Weight (1000 lbs)",
+    y = "Miles per Gallon",
+    color = "Cylinders",
     caption = "Source: mtcars dataset"
-  ) +
-  theme_furmanu()
+  )
 ```
 
-#' See also \code{\link{open_furmanu_demo}} to view the full example Quarto file.
+## Available Palettes
+
+View all available palettes with their intended use cases:
+
+```{r show-palettes, fig.width=8, fig.height=6}
+show_furmanu_palettes()
+```
+
+```{r list-palettes}
+# Get detailed information about palettes
+list_palettes()
+```
+
+## Palette Types and Usage Guide
+
+### Categorical Data (Discrete Groups)
+
+For discrete categories like species, groups, or factors:
+
+```{r categorical-example, fig.width=8, fig.height=5}
+# Use the "main" palette for up to 6 categories
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_furmanu(palette = "main", discrete = TRUE) +
+  theme_furmanu() +
+  labs(
+    title = "Iris Species Comparison",
+    subtitle = "Using categorical color palette",
+    x = "Sepal Length", y = "Sepal Width"
+  )
+```
+
+### Sequential Data (Continuous, One Direction)
+
+For continuous data that goes from low to high:
+
+```{r sequential-example, fig.width=8, fig.height=5}
+# Use sequential palettes for continuous data
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+  geom_tile() +
+  scale_fill_furmanu(palette = "sequential1", discrete = FALSE) +
+  theme_furmanu() +
+  labs(
+    title = "Old Faithful Eruption Patterns",
+    subtitle = "Using sequential color palette",
+    x = "Waiting Time (min)", y = "Eruption Duration (min)",
+    fill = "Density"
+  )
+```
+
+### Divergent Data (Continuous, Two Directions)
+
+For data that diverges from a meaningful center point:
+
+```{r divergent-example, fig.width=8, fig.height=5}
+# Create divergent data
+mtcars$mpg_diff <- mtcars$mpg - mean(mtcars$mpg)
+
+ggplot(mtcars, aes(x = wt, y = hp, color = mpg_diff)) +
+  geom_point(size = 4) +
+  scale_color_furmanu(
+    palette = "divergent1", 
+    discrete = FALSE, 
+    midpoint = 0  # This is key for divergent scales!
+  ) +
+  theme_furmanu() +
+  labs(
+    title = "Car Performance vs Fuel Efficiency",
+    subtitle = "Color shows deviation from average MPG",
+    x = "Weight (1000 lbs)", y = "Horsepower",
+    color = "MPG\nDifference"
+  )
+```
+
+## Theme Variants
+
+### Standard Theme
+```{r standard-theme, fig.width=7, fig.height=4}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(color = furmanu_cols("purple"), alpha = 0.7) +
+  theme_furmanu() +
+  labs(title = "Standard Furman Theme")
+```
+
+### Presentation Theme
+```{r presentation-theme, fig.width=7, fig.height=4}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(color = furmanu_cols("purple"), alpha = 0.7) +
+  theme_furmanu_presentation() +
+  labs(title = "Presentation Theme")
+```
+
+### Minimal Theme
+```{r minimal-theme, fig.width=7, fig.height=4}
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(color = furmanu_cols("purple"), alpha = 0.7) +
+  theme_furmanu_minimal() +
+  labs(title = "Minimal Theme")
+```
+
+## Advanced Features
+
+### Color Accessibility
+```{r accessibility-check}
+# Check contrast ratios
+check_contrast("main")
+
+# Find accessible combinations
+head(accessible_combinations())
+```
+
+### Palette Export
+```{r palette-export}
+# Export as CSS variables
+export_palette("main", format = "css")
+
+# Export as JSON
+export_palette("divergent1", format = "json")
+```
+
+## Tips for Effective Use
+
+1. **Start with palette exploration**: Use `show_furmanu_palettes()` to see all options
+2. **Choose the right type**: 
+   - Categorical → "main" or "cool"
+   - Sequential → "sequential1", "sequential2", "sequential3"  
+   - Divergent → "divergent1", "divergent2", "divergent3"
+3. **Use `discrete = FALSE` for continuous data**
+4. **Add `midpoint = 0` for divergent continuous scales**
+5. **Check accessibility**: Use `check_contrast()` for important visualizations
+6. **Match theme to context**: Use `theme_furmanu_presentation()` for slides
+
+## Getting Help
+
+```r
+# View comprehensive examples
+open_furmanu_demo()
+
+# Get help on any function
+?scale_color_furmanu
+?theme_furmanu
+?show_furmanu_palettes
+
+# List all available palettes
+list_palettes()
+
+# Get detailed palette information
+palette_info("main")
+```
+
+See also `open_furmanu_demo()` to view the comprehensive example Quarto file with detailed tutorials and advanced techniques.

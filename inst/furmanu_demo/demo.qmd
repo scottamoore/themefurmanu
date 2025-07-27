@@ -1,8 +1,29 @@
 ---
 title: "Furman ggplot2 Theme Demo"
-format: html
+subtitle: "Comprehensive Guide to themefurmanu Package"
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    code-fold: false
+    fig-width: 8
+    fig-height: 5.5
 editor: visual
 ---
+
+## Introduction
+
+The `themefurmanu` package provides a comprehensive ggplot2 theme and color palette system designed for Furman University's visual identity. This demo showcases the **unified approach** that makes themefurmanu different from other color palette packages.
+
+### Key Innovation: One Function, Multiple Behaviors
+
+Instead of learning dozens of function names like `scale_color_viridis_d()`, `scale_color_brewer()`, `scale_fill_gradient2()`, etc., themefurmanu uses **just two main functions**:
+
+-   `scale_color_furmanu(palette = "name", discrete = TRUE/FALSE, ...)`
+-   `scale_fill_furmanu(palette = "name", discrete = TRUE/FALSE, ...)`
+
+You control the behavior through **arguments** rather than function names. This is more intuitive and consistent.
 
 ```{r setup}
 library(dplyr)
@@ -12,247 +33,299 @@ library(themefurmanu)
 # register_furmanu_fonts()
 ```
 
-## Default Scatter Plot
+## Understanding the Palette System
 
-```{r}
-ggplot(mtcars, aes(wt, mpg)) +
-  geom_point(color = "#582c83", size = 3) +
-  labs(
-    title = "Fuel Efficiency by Car Weight",
-    subtitle = "Using `theme_furmanu()` from the themefurmanu package",
-    x = "Weight (1000 lbs)",
-    y = "Miles per Gallon",
-    caption = "Source: mtcars dataset"
-  ) +
-  theme_furmanu()
-```
+### Available Palettes Overview
 
-## Faceted Histogram Example
-
-```{r}
-ggplot(mpg, aes(displ)) +
-  geom_histogram(fill = "#201547", color = "white") +
-  facet_wrap(~class) +
-  labs(
-    title = "Distribution of Engine Displacement",
-    subtitle = "Faceted by Vehicle Class",
-    caption = "Source: ggplot2 mpg dataset"
-  ) +
-  theme_furmanu()
-```
-
-## View the color palettes
-
-```{r}
+```{r palette-overview}
+# View all palettes at once
 show_furmanu_palettes()
+
+# Get structured information
+list_palettes()
 ```
 
-## Example graphs
+### Palette Categories and When to Use Them
 
-In the following, we demonstrate the use of the color palettes in a variety of graphs. The graphs are based on the `mtcars` and `iris` datasets, which are included in `R` by default. The only code that you should be looking at is the `scale_*_furmanu()` calls, which are where the color palettes are applied to the graphs. The rest of the code is just for setting up the data and the graph.
-
-The benefits of the `scale_*_furmanu()` functions are that they
-
-1.  Automatically apply the correct color palette based on the type of data (discrete or continuous) and the type of graph (point, line, etc.),
-2.  Allow you to specify the palette name (e.g., `main`, `divergent1`, etc.) and whether the palette should be discrete or continuous,
-3.  Help you to apply the right kind of palette (sequential, divergent, or categorical) based on the type of data you are working with, without having to go through the sometimes challenging process of defining one yourself, and
-4.  Help you use pre-defined palettes that are consistent with the university's branding guidelines.
-
-This makes it easy to create consistent and visually appealing graphs without having to manually specify the colors each time.
-
-### Divergent / Discrete
-
-In this example, we will use the `mtcars` dataset to demonstrate the use of a *divergent* palette with *discrete* data. We will create a scatter plot of horsepower (`hp`) vs. miles per gallon (`mpg`), colored by the difference from the mean `mpg`.
-
-We are using a *divergent* palette because we want to emphasize the distance from a neutral `0` value for the different buckets of values in either a positive or a negative direction.
-
-First, we have to prepare the data. We will create a new column called `diff_bin`, which will be a factor variable that indicates whether the `mpg` value is less than, equal to, or greater than the mean `mpg` value.
-
-```{r}
-#| echo: TRUE
-#| eval: TRUE
-#| label: div_disc_prepare
-#| code-fold: true
-mtcars2 <- mtcars |> 
-  mutate(diff_bin = cut(mpg - mean(mpg), 
-                        breaks = c(-Inf, -5, 0, 5, Inf),
-                        labels = c("<<", "<", ">", ">>")))
+```{r palette-info}
+# Get detailed info for each type
+palette_info("main")           # Categorical
+palette_info("sequential1")    # Sequential  
+palette_info("divergent1")     # Divergent
 ```
 
-Now we can create the plot. We will use the `scale_color_furmanu()` function to apply the `divergent3` palette to the `diff_bin` variable. Note that we do not have to tell `ggplot2` how many colors to use, as the `scale_color_furmanu()` function will automatically determine the number of colors based on the number of levels in the `diff_bin` variable.
+## Theme Variants
 
-```{r}
-#| echo: TRUE
-#| eval: TRUE
-#| label: div_disc_plot
-#| fig-width: 8
-#| fig-height: 5
-mtcars2 |>
-  ggplot(aes(x = hp, y = mpg, color = diff_bin)) +
-    geom_point(size = 4) +
-    scale_color_furmanu(palette = "divergent3", 
-                        midpoint = 0,
-                        discrete = TRUE) +
-    theme_furmanu() +
-    labs(title = "Divergent / Discrete",
-         subtitle = "Difference from Mean MPG",
-         x = "Horsepower",
-         y = "Miles per Gallon",
-         color = "Deviation Bin",
-         caption = "Made for rforir")
+```{r themes-demo}
+# Standard theme
+p_standard <- ggplot(mtcars, aes(wt, mpg)) +
+  geom_point(color = "#582c83", size = 3) +
+  labs(title = "Standard Theme", subtitle = "Default styling") +
+  theme_furmanu()
+
+# Presentation theme
+p_presentation <- ggplot(mtcars, aes(wt, mpg)) +
+  geom_point(color = "#582c83", size = 3) +
+  labs(title = "Presentation Theme", subtitle = "Larger fonts for slides") +
+  theme_furmanu_presentation()
+
+# Minimal theme
+p_minimal <- ggplot(mtcars, aes(wt, mpg)) +
+  geom_point(color = "#582c83", size = 3) +
+  labs(title = "Minimal Theme", subtitle = "Clean and understated") +
+  theme_furmanu_minimal()
+
+p_standard
+p_presentation
+p_minimal
 ```
 
-### Divergent / Continuous
+## The Core Concept: One Function, Many Uses
 
-In this example, we will use the `mtcars` dataset to demonstrate the use of a *divergent* palette with *continuous* data. We will create a scatter plot of horsepower (`hp`) vs. weight (`wt`), colored by the difference from the mean `mpg`.
+The beauty of themefurmanu is its simplicity. Instead of memorizing different function names, you use the same function with different arguments:
 
-We are using a *divergent* palette because we want to emphasize the distance from a neutral `0` value in either a positive or a negative direction.
+### The Pattern:
 
-```{r}
-#| echo: TRUE
-#| eval: TRUE
-#| label: div_cont_prepare
-#| code-fold: true
-mtcars2 <- mtcars |> 
-  mutate(
-    mpg_diff = mpg - mean(mpg),
-    car = rownames(mtcars)
+``` r
+scale_color_furmanu(palette = "palette_name", discrete = TRUE/FALSE, ...)
+scale_fill_furmanu(palette = "palette_name", discrete = TRUE/FALSE, ...)
+```
+
+### Quick Decision Guide:
+
+-   **Categorical data** (species, groups, factors) → `discrete = TRUE`
+-   **Continuous data** (temperature, scores, measurements) → `discrete = FALSE`
+-   **Divergent continuous** (deviations, differences) → `discrete = FALSE, midpoint = 0`
+
+## Categorical Examples (discrete = TRUE)
+
+### Example 1: Basic Categorical Colors
+
+```{r categorical-basic}
+# Simple categorical coloring
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_furmanu(palette = "main", discrete = TRUE) +
+  theme_furmanu() +
+  labs(
+    title = "Iris Species Comparison",
+    subtitle = "Each species gets a distinct color",
+    x = "Sepal Length (cm)", y = "Sepal Width (cm)"
   )
-# Get range of mpg_diff
-min_diff <- min(mtcars2$mpg_diff, na.rm = TRUE)
-max_diff <- max(mtcars2$mpg_diff, na.rm = TRUE)
-max_limit <- max(round(abs(min_diff-1),0), round(abs(max_diff+1), 0))
-
-# Get maximum weight
-max_wt <- max(mtcars2$wt, na.rm = TRUE)
-max_wt_scale <- round(max_wt + 0.5, 0)
-
-# Get maximum horsepower
-max_hp <- max(mtcars2$hp, na.rm = TRUE)
-max_hp_scale <- round(max_hp + 50, -2)
 ```
 
-Let's create the plot. We will use the `scale_color_furmanu()` function to apply the `divergent3` palette to the `mpg_diff` variable. Note that we have to specify the `midpoint` and `limits` arguments to ensure that the color scale is centered around zero and that the limits are set to the maximum and minimum values of the `mpg_diff` variable.
+### Example 2: Categorical Fill for Bar Charts
 
-```{r}
-#| echo: TRUE
-#| eval: TRUE
-#| label: div_cont_plot
-#| fig-width: 8
-#| fig-height: 5
-mtcars2 |>
-  ggplot(aes(x = wt, y = hp, color = mpg_diff)) +
-    geom_point(size = 4) +
-    scale_x_continuous(limits = c(0, max_wt_scale)) + 
-    scale_y_continuous(limits = c(0, max_hp_scale)) +
-    scale_color_furmanu(
-      palette = "divergent3",
-      discrete = FALSE,
-      midpoint = 0,
-      limits = c(-1 * max_limit, max_limit)
-    ) +
-    theme_furmanu() +
-    labs(
-      title = "Divergent / Continuous",
-      subtitle = "Color shows deviation from average MPG",
-      x = "Weight (1000 lbs)",
-      y = "Horsepower",
-      color = "MPG\nDiff",
-      caption = "Made for rforir"
-    )
+```{r categorical-bars}
+# Bar chart with categorical fill
+mtcars_summary <- mtcars %>%
+  group_by(cyl) %>%
+  summarise(avg_mpg = mean(mpg), .groups = 'drop')
+
+ggplot(mtcars_summary, aes(x = factor(cyl), y = avg_mpg, fill = factor(cyl))) +
+  geom_col(width = 0.7, alpha = 0.9) +
+  scale_fill_furmanu(palette = "cool", discrete = TRUE) +
+  theme_furmanu() +
+  labs(
+    title = "Average MPG by Cylinder Count",
+    x = "Number of Cylinders", y = "Miles per Gallon",
+    fill = "Cylinders"
+  )
 ```
 
-### Sequential / Discrete
+## Sequential Examples (discrete = FALSE)
 
-In this example, we will use the `iris` dataset to demonstrate the use of a *sequential* palette with *discrete* data. We will create a scatter plot of sepal length (`Sepal.Length`) vs. sepal width (`Sepal.Width`), colored by the binned petal length (`Petal.Length`).
+Sequential palettes show progression from low to high values.
 
-We are using a *sequential* palette because we want to emphasize the order of the binned values in a positive direction.
+### Example 3: Sequential Continuous Colors
 
-We first have to prepare the data. We will create a new column called `length_bin`, which will be a factor variable that indicates the binned petal length values.
-
-```{r}
-#| echo: TRUE
-#| eval: TRUE
-#| label: seq_disc_prepare
-#| code-fold: true
-iris2 <- iris |> 
-  mutate(length_bin = cut(Petal.Length, breaks = 4))
+```{r sequential-continuous}
+# Heatmap with sequential colors
+ggplot(faithfuld, aes(waiting, eruptions, fill = density)) +
+  geom_tile() +
+  scale_fill_furmanu(palette = "sequential1", discrete = FALSE) +
+  theme_furmanu() +
+  labs(
+    title = "Old Faithful Eruption Patterns",
+    subtitle = "Density increases from light to dark",
+    x = "Waiting Time (min)", y = "Eruption Duration (min)",
+    fill = "Density"
+  )
 ```
 
-Now we can create the plot. We will use the `scale_fill_furmanu()` function to apply the `sequential3` palette to the `length_bin` variable. Note that we do not have to tell `ggplot2` how many colors to use, as the `scale_fill_furmanu()` function will automatically determine the number of colors based on the number of levels in the `length_bin` variable.
+### Example 4: Sequential with Points
 
-```{r}
-#| echo: TRUE
-#| eval: TRUE
-#| label: seq_disc_plot
-#| fig-width: 8
-#| fig-height: 5
-iris2 |>
-  ggplot(aes(x = Sepal.Length, y = Sepal.Width, fill = length_bin)) +
-    geom_point(shape = 21, size = 3, color = "black") +
-    scale_fill_furmanu(palette = "sequential3", 
-                       discrete = TRUE) +
-    theme_furmanu() +
-    labs(title = "Sequential / Discrete",
-         subtitle = "Petal Length Binned",
-         x = "Sepal Length",
-         y = "Sepal Width",
-         fill = "Petal Length Bin",
-         caption = "Made for rforir")
+```{r sequential-points}
+# Scatter plot with sequential coloring
+ggplot(mtcars, aes(x = wt, y = mpg, color = hp)) +
+  geom_point(size = 4, alpha = 0.8) +
+  scale_color_furmanu(palette = "sequential2", discrete = FALSE) +
+  theme_furmanu() +
+  labs(
+    title = "Car Performance Relationships",
+    subtitle = "Color intensity shows horsepower",
+    x = "Weight (1000 lbs)", y = "Miles per Gallon",
+    color = "Horsepower"
+  )
 ```
 
-### Sequential / Continuous
+## Divergent Examples (discrete = FALSE, midpoint = 0)
 
-In this example, we will use the `faithful` dataset to demonstrate the use of a *sequential* palette with *continuous* data. We will create a scatter plot of eruption duration (`eruptions`) vs. waiting time (`waiting`), colored by the waiting time.
+Divergent palettes emphasize deviations from a center point.
 
-We are using a *sequential* palette because we want to emphasize the order of the waiting time values in a positive direction. No natural center-point exists for this data, so we are not using a *divergent* palette.
+### Example 5: Divergent with Midpoint
 
-We do not have to prepare any data this time, so we can get right into creating the plot. We will use the `scale_color_furmanu()` function to apply the `sequential2` palette to the `waiting` variable. Note that we do not have to tell `ggplot2` how many colors to use or how to blend the colors, as the `scale_color_furmanu()` function will automatically create the scale gradient. All we have to do is choose an appropriate palette name.
+```{r divergent-midpoint}
+# Create data that diverges from zero
+mtcars_divergent <- mtcars %>%
+  mutate(mpg_diff = mpg - mean(mpg))
 
-```{r}
-#| echo: TRUE
-#| eval: TRUE
-#| label: seq_cont
-#| fig-width: 8
-#| fig-height: 5
-faithful |>
-  ggplot(aes(x = eruptions, y = waiting, color = waiting)) +
-    geom_point(size = 2.5) +
-    scale_color_furmanu(palette = "sequential2", 
-                        discrete = FALSE) +
-    theme_furmanu() +
-    labs(title = "Sequential / Continuous",
-         subtitle = "Old Faithful Geyser Data",
-         x = "Eruption Duration (minutes)",
-         y = "Waiting Time (minutes)",
-         color = "Waiting\nTime",
-         caption = "Made for rforir")
+ggplot(mtcars_divergent, aes(x = wt, y = hp, color = mpg_diff)) +
+  geom_point(size = 4) +
+  scale_color_furmanu(
+    palette = "divergent1", 
+    discrete = FALSE, 
+    midpoint = 0  # This centers the scale at zero
+  ) +
+  theme_furmanu() +
+  labs(
+    title = "Car Performance vs Fuel Efficiency",
+    subtitle = "Red = below average MPG, Purple = above average MPG",
+    x = "Weight (1000 lbs)", y = "Horsepower",
+    color = "MPG\nDifference"
+  )
 ```
 
-### Categorical
+### Example 6: Divergent Fill (Heatmap Style)
 
-Finally, in this example, we will use the `iris` dataset to demonstrate the use of a *categorical* palette with *discrete* data. We will create a scatter plot of sepal length (`Sepal.Length`) vs. sepal width (`Sepal.Width`), colored by the species of the iris flower.
+```{r divergent-heatmap}
+# Create correlation matrix for demonstration
+cor_data <- mtcars %>%
+  select(mpg, hp, wt, qsec) %>%
+  cor() %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("var1") %>%
+  tidyr::pivot_longer(-var1, names_to = "var2", values_to = "correlation")
 
-We are using a *categorical* palette because we want to emphasize the differences between the species of the iris flower. We only have to choose a palette that has enough colors to represent the number of species in the dataset.
-
-Again, we do not have to prepare any data for this graph. We will use the `scale_color_furmanu()` function to apply the `cool` palette to the `Species` variable. Note that we do not have to tell `ggplot2` how many colors to use, as the `scale_color_furmanu()` function will automatically determine assign the colors to the separate values in the `Species` variable.
-
-```{r}
-#| echo: TRUE
-#| eval: TRUE
-#| label: categorial
-#| fig-width: 8
-#| fig-height: 5
-iris |>
-  ggplot(aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
-    geom_point(size = 4) +
-    scale_color_furmanu(palette = "cool", 
-                        discrete = TRUE) +
-    theme_furmanu() +
-    labs(title = "Categorical",
-         subtitle = "Sepal measurements for Iris Species",
-         x = "Sepal Length",
-         y = "Sepal Width",
-         color = "Species",
-         caption = "Made for rforir")
+ggplot(cor_data, aes(var1, var2, fill = correlation)) +
+  geom_tile() +
+  scale_fill_furmanu(
+    palette = "divergent3", 
+    discrete = FALSE, 
+    midpoint = 0,
+    limits = c(-1, 1)
+  ) +
+  theme_furmanu() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    title = "Variable Correlation Matrix",
+    subtitle = "Red = negative correlation, Green = positive correlation",
+    x = "", y = "", fill = "Correlation"
+  )
 ```
+
+## Advanced Features
+
+### Accessibility Checking
+
+Always check if your color choices are accessible:
+
+```{r accessibility}
+# Check contrast for readability
+contrast_results <- check_contrast("main")
+print(contrast_results)
+
+# Find accessible combinations
+accessible_combos <- accessible_combinations(standard = "AA")
+head(accessible_combos)
+```
+
+### Palette Export for Other Applications
+
+Export your palettes for use in other tools:
+
+```{r export-demo}
+# Export as CSS variables
+css_export <- export_palette("cool", format = "css")
+cat(css_export, sep = "\n")
+
+# Export as JSON
+json_export <- export_palette("divergent1", format = "json")
+cat(json_export)
+```
+
+### Custom Color Extraction
+
+Extract specific numbers of colors from any palette:
+
+```{r color-extraction}
+# Extract 8 colors from a 3-color palette (with interpolation)
+colors_8 <- extract_colors("divergent1", n = 8)
+print(colors_8)
+
+# Visualize the extraction
+barplot(rep(1, 8), col = colors_8, 
+        main = "8 Colors Extracted from divergent1 Palette",
+        axes = FALSE)
+```
+
+## Common Mistakes and How to Avoid Them
+
+### Mistake 1: Wrong discrete setting
+
+``` r
+# ❌ WRONG: Using discrete=TRUE for continuous data
+scale_color_furmanu(palette = "sequential1", discrete = TRUE)  # Creates only 2 colors
+
+# ✅ CORRECT: Using discrete=FALSE for continuous data  
+scale_color_furmanu(palette = "sequential1", discrete = FALSE) # Creates smooth gradient
+```
+
+### Mistake 2: Forgetting midpoint for divergent data
+
+``` r
+# ❌ WRONG: Divergent scale without midpoint
+scale_color_furmanu(palette = "divergent1", discrete = FALSE)
+
+# ✅ CORRECT: Divergent scale with midpoint
+scale_color_furmanu(palette = "divergent1", discrete = FALSE, midpoint = 0)
+```
+
+### Mistake 3: Using wrong palette type
+
+``` r
+# ❌ WRONG: Sequential palette for categorical data
+scale_color_furmanu(palette = "sequential1", discrete = TRUE)  # Only 2 categories
+
+# ✅ CORRECT: Categorical palette for categorical data
+scale_color_furmanu(palette = "main", discrete = TRUE)        # Up to 6 categories
+```
+
+## Quick Reference
+
+### For Categorical Data:
+
+-   **Few categories (≤3)**: `palette = "cool"`
+-   **Many categories (≤6)**: `palette = "main"`
+-   **Always use**: `discrete = TRUE`
+
+### For Continuous Data:
+
+-   **Sequential (low→high)**: `palette = "sequential1/2/3"`, `discrete = FALSE`
+-   **Divergent (low←center→high)**: `palette = "divergent1/2/3"`, `discrete = FALSE, midpoint = 0`
+
+### For Special Cases:
+
+-   **Monochrome**: `palette = "gray"`
+-   **Performance ratings**: `palette = "evaluate"` (red=poor, yellow=ok, green=good)
+
+## Practice Exercises
+
+Try these exercises to master the themefurmanu approach:
+
+1.  **Create a bar chart** showing count of cars by transmission type, colored by transmission type
+2.  **Make a heatmap** of the `mtcars` correlation matrix using a divergent palette
+3.  **Build a scatter plot** with continuous color mapping for a sequential variable
+4.  **Design a plot** using the presentation theme for a hypothetical conference talk
+
+Remember: **One function, many possibilities!** 🎨
